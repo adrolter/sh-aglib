@@ -1,4 +1,4 @@
-# aglib.sh
+# sh-aglib
 
 A library of portable (POSIX/SVR4) Bourne-compatible shell functions and macros
 
