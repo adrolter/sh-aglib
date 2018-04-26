@@ -14,6 +14,7 @@ _str_replace() {
     # TODO is it faster to printf in cmd sub for 2nd string ($s) or to remove $a from end of $s using ${s%"$a"} and simply concat it all?
     # Might depend on length of strings being dealt with?
     new_s="$(printf "%s%.$((${#s} - ${#a} - $tlen))s%s" "$new_s" "$s" "$r")"
+    # ALT: new_s="${new_s}${s%"$t$a"}${r}"
     s="$a"
   done
 
