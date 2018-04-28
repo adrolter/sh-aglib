@@ -11,11 +11,11 @@ _str_replace() {
          __strrep_remain="${__strrep_str#*"${__strrep_substr}"}"
          case "$__strrep_str" in "$__strrep_remain") __strrep_newstr="${__strrep_newstr}${__strrep_str}"; break;; esac
          __strrep_newstr="${__strrep_newstr}${__strrep_str%"${__strrep_substr}${__strrep_remain}"}${__strrep_repstr}"
-         __strrep_str="$__strrep_remain"
-         case $__strrep_limit in [!0])
+         case $__strrep_limit in 0) :;; *)
            __strrep_i=$((${__strrep_i=0} + 1))
            case $__strrep_i in $__strrep_limit) __strrep_newstr="${__strrep_newstr}${__strrep_str}"; break; esac
          esac
+         __strrep_str="$__strrep_remain"
        done
        printf %s "${__strrep_newstr}"
        unset __strrep_newstr __strrep_remain __strrep_i ;;
