@@ -5,9 +5,8 @@ _str_replace() {
   __strrep_limit="${4:-0}"
   __strrep_method="${5:-paramsub}"
 
-  __strrep_newstr=
   case $__strrep_method in
-    paramsub)
+    paramsub) __strrep_newstr=
       while :; do
          __strrep_remain="${__strrep_str#*"${__strrep_substr}"}"
          case "$__strrep_str" in "$__strrep_remain") __strrep_newstr="${__strrep_newstr}${__strrep_str}"; break;; esac
@@ -19,9 +18,9 @@ _str_replace() {
          esac
        done
        printf %s "${__strrep_newstr}"
-       unset __strrep_remain __strrep_newstr __strrep_i ;;
+       unset __strrep_newstr __strrep_remain __strrep_i ;;
     sed)
-       printf %s "$__strrep_str" \
+       printf %s "$__strrep_str" \ # TODO: Fix - this will not escape regex special chars, need _str_pprepend $str '[\[(...]' '\\'
        | sed -e s/"$(_str_replace "$__strrep_substr" / '\/')"/"$(_str_replace "$__strrep_repstr" / '\/')"/g ;;
     *) return 5 ;;
   esac
