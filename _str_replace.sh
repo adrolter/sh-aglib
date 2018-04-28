@@ -1,3 +1,5 @@
+. "$AGLIB"/_str_escape.sh
+
 _str_replace() {
   __strrep_str="$1"
   __strrep_substr="$2"
@@ -20,8 +22,8 @@ _str_replace() {
        printf %s "${__strrep_newstr}"
        unset __strrep_newstr __strrep_remain __strrep_i ;;
     sed)
-       printf %s "$__strrep_str" \ # TODO: Fix - this will not escape regex special chars, need _str_pprepend $str '[\[(...]' '\\'
-       | sed -e s/"$(_str_replace "$__strrep_substr" / '\/')"/"$(_str_replace "$__strrep_repstr" / '\/')"/g ;;
+       printf %s "$__strrep_str" \
+       | sed -e s/"$(_str_escape "$__strrep_substr" -- \/ \[ \^ \$ \( \. \* \+ \? \{)"/"$(_str_escape "$__strrep_repstr" -- /)"/g ;;
     *) return 5 ;;
   esac
   unset __strrep_str __strrep_substr __strrep_repstr __strrep_limit __strrep_method
