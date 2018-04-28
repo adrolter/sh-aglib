@@ -1,22 +1,29 @@
 _str_replace() {
-  # TODO decide on func signature (order of pararms)
-  # TODO add "limit" paramter and break loop early if reached
-  t="e" # search
-  tlen=${#t}
-  r="ee" # replace
-  s="this is a test of the emergency broadcast system" # source
+  __strrep_str="$1"
+  __strrep_substr="$2"
+  __strrep_repstr="$3"
+  __strrep_limit="${4:-0}"
+  __strrep_method="${5:-paramsub}"
 
-  new_s=
-  while :; do
-    a="${s#*"$t"}"
-    #echo "s='$s'; a='$a'"
-    case "$s" in "$a") new_s="${new_s}${s}"; break;; esac
-    # TODO is it faster to printf in cmd sub for 2nd string ($s) or to remove $a from end of $s using ${s%"$a"} and simply concat it all?
-    # Might depend on length of strings being dealt with?
-    new_s="$(printf "%s%.$((${#s} - ${#a} - $tlen))s%s" "$new_s" "$s" "$r")"
-    # ALT: new_s="${new_s}${s%"$t$a"}${r}"
-    s="$a"
-  done
-
-  printf %s "$new_s"
+  __strrep_newstr=
+  case $__strrep_method in
+    paramsub)
+      while :; do
+         __strrep_remain="${__strrep_str#*"${__strrep_substr}"}"
+         case "$__strrep_str" in "$__strrep_remain") __strrep_newstr="${__strrep_newstr}${__strrep_str}"; break;; esac
+         __strrep_newstr="${__strrep_newstr}${__strrep_str%"${__strrep_substr}${__strrep_remain}"}${__strrep_repstr}"
+         __strrep_str="$__strrep_remain"
+         case $__strrep_limit in [!0])
+           __strrep_i=$((${__strrep_i=0} + 1))
+           case $__strrep_i in $__strrep_limit) __strrep_newstr="${__strrep_newstr}${__strrep_str}"; break; esac
+         esac
+       done
+       printf %s "${__strrep_newstr}"
+       unset __strrep_remain __strrep_newstr __strrep_i ;;
+    sed)
+       printf %s "$__strrep_str" \
+       | sed -e s/"$(_str_replace "$__strrep_substr" / '\/')"/"$(_str_replace "$__strrep_repstr" / '\/')"/g ;;
+    *) return 5 ;;
+  esac
+  unset __strrep_str __strrep_substr __strrep_repstr __strrep_limit __strrep_method
 }
