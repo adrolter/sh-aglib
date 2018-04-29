@@ -1,7 +1,5 @@
 . "$AGLIB"/_char_repeat.sh
 
-# Fancy string repeat
-# Note: we use = to compare numbers for speed
 _str_repeat2() {
   s="$1"
   count="$2" # _test_parse_int ?
@@ -18,7 +16,7 @@ _str_repeat2() {
   fi
   [ ${4-0} = 1 ] && >&2 printf 'Source: "%s"\nLength: %d\nCount: %d\nMethod: %s\n' "$s" $strlen $count "$method"
   case "$method" in
-          char) _char_repeat "$1" $count; echo ;;
+          char) _char_repeat "$1" $count; printf \\n ;;
     printf-seq) for i in $(seq $count); do printf %s "$s"; done ;;
         static) case $count in # TODO Source a seperate file of compiled case statement from 2-100+
                   2) printf %s "$s$s" ;;
@@ -47,7 +45,7 @@ _str_repeat2() {
       awk-pipe) awk 'BEGIN{for(i=0;i<'${count}';i++)printf "%s",s}' ;;
     concat-seq) t=; for i in $(seq $count); do t="$t$s"; done; printf %s "$t" ;;
     perl-slurp) perl -0777pe '$_=$_ x '$count ;;
-             *) return 3;;
+             *) return 3
   esac
 }
 

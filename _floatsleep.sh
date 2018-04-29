@@ -1,14 +1,15 @@
 . "$AGLIB"/_awk_math.sh
 
 _floatsleep() {
-  if [ -z ${__floatsleep_method+set} ]; then __floatsleep_method=; for _ in gnusleep usleep perl; do
-    if _floatsleep 0 $_; then __floatsleep_method=$_; break; fi
-  done; fi
-  [ -z ${2+set} ] && set "$1" "$__floatsleep_method"
-  if [ "$2" = gnusleep ]; then 2>/dev/null command sleep "$1"
-elif [ "$2" = usleep ]; then 2>/dev/null command usleep "$(_awk_math "$1 * 1000000" 0)"
-elif [ "$2" = perl ]; then 2>/dev/null command perl -MTime::HiRes -e"Time::HiRes::usleep $(_awk_math "$1 * 1000000" 0)"
-else return 1
-  fi
+  case ${2+set}${__fsleep_method+set} in '') __fsleep_method=$(for m in gnusleep usleep perl; do
+    if _floatsleep 0.0 $m; then printf %s $m; break; fi
+  done); esac
+  case ${2+set} in '') set "$1" "$__fsleep_method"; esac
+  case "$2" in
+    gnusleep) 2>/dev/null command sleep "$1" ;;
+    usleep)   2>/dev/null command usleep "$(_awk_math "$1 * 1000000" 0)" ;;
+    perl)     2>/dev/null perl -MTime::HiRes -e"Time::HiRes::usleep $(_awk_math "$1 * 1000000" 0)" ;;
+    *)        return 2
+  esac
 }
 

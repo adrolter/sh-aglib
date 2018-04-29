@@ -38,6 +38,6 @@ _str_substr() {
               ;;
  printf-cmdsub) printf %.${length}s "${s#"$(printf %.${offset}s "$s")"}" ;;
    printf-eval) t=; while :; do case ${#t} in $offset) break;; esac; t="$t?"; done; eval "printf %.${length}s \"\${s#$t}\"" ;;
-             *) return 3;;
+             *) return 3
   esac
 }

@@ -1,1 +1,3 @@
-_str_contains() { [ -z "$2" ] || [ -n "$1" ] && [ -z "${1##*"${2}"*}" ]; }
+
+_str_contains() { case ${2:+x} in '') return 0; esac; case ${2:+x} in x) case "${1##*"${2}"*}" in '') return 0; esac; esac; return 1; }
+
